@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Bienvenido - Solicite su Turno";
+}
+
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+    <div class="col-md-6">
+        <div class="card shadow-lg border-0 rounded-4 p-5 text-center">
+            <h1 class="display-4 fw-bold text-primary mb-4">SISTEMA DE TURNOS</h1>
+            <p class="h4 text-muted mb-5">Por favor, ingrese su documento para obtener un ticket</p>
+
+            <div class="mb-4">
+                <input type="text" id="dni-cliente" class="form-control form-control-lg text-center shadow-sm" 
+                       placeholder="Escriba su DNI aquí" style="font-size: 2rem; border-radius: 15px;">
+            </div>
+
+            <div class="d-grid gap-3">
+                <button class="btn btn-primary btn-lg py-3 shadow" onclick="solicitarTurno()" style="font-size: 1.5rem; border-radius: 15px;">
+                    <i class="fas fa-ticket-alt"></i> OBTENER TURNO
+                </button>
+            </div>
+            
+            <div class="mt-4">
+                <a asp-controller="Account" asp-action="Login" class="text-decoration-none text-muted small">
+                    <i class="fas fa-lock"></i> Acceso Personal
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/home.js"></script>
+}

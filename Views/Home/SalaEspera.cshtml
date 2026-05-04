@@ -1,0 +1,62 @@
+@model SistemaTurnos.Models.Turn
+@{
+    Layout = "_Layout";
+    var siguientes = ViewBag.Siguientes as IEnumerable<SistemaTurnos.Models.Turn>;
+}
+
+<div class="container-fluid bg-dark text-white vh-100 p-5">
+    <div class="row h-100">
+        <!-- IZQUIERDA: LLAMADO ACTUAL -->
+        <div class="col-md-8 d-flex flex-column justify-content-center align-items-center border-end border-secondary">
+            <h1 class="display-1 fw-bold text-info">TURNO ACTUAL</h1>
+            <div class="text-center">
+                @if (Model != null) {
+                    <span class="display-1 fw-bold" style="font-size: 12rem;" id="txt-sala-ticket">@Model.Ticket</span>
+                    <h2 class="display-3 text-uppercase text-white">@Model.User.Name @Model.User.LastName</h2>
+                } else {
+                    <span class="display-1 text-muted" style="font-size: 8rem;">---</span>
+                    <h2 class="display-4 text-muted">ESPERANDO...</h2>
+                }
+            </div>
+        </div>
+
+        <!-- DERECHA: SIGUIENTES -->
+        <div class="col-md-4 ps-5">
+            <h2 class="text-secondary border-bottom border-secondary pb-3 mb-4">PRÓXIMOS</h2>
+            <div id="lista-sala-espera">
+                @if (siguientes != null) {
+                    foreach (var item in siguientes) {
+                        <div class="d-flex justify-content-between mb-4 border-bottom border-secondary pb-2">
+                            <span class="h1 fw-bold text-info">@item.Ticket</span>
+                            <span class="h1 text-muted">@item.CreatedAt.ToString()</span>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sonido de notificación -->
+<audio id="audio-notificacion" src="~/fifo.mp3"></audio>
+
+@section Scripts {
+    <script src="~/js/home.js"></script>
+    <script>
+        let ultimoTicket = "@(Model?.Ticket ?? "")";
+
+        function refrescarSala() {
+            $.get('/Home/GetSalaData', function(data) {
+                // Comparamos el ticket que devuelve el JSON con el que tenemos en pantalla
+                if (data.success && data.ticket !== ultimoTicket) {
+                    document.getElementById('audio-notificacion').play();
+                    ultimoTicket = data.ticket;
+                    // Recargamos para actualizar nombres y lista de espera
+                    setTimeout(() => { location.reload(); }, 1500);
+                }
+            });
+        }
+        // Consultar cambios cada 5 segundos
+        setInterval(refrescarSala, 5000);
+    </script>
+}

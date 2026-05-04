@@ -1,0 +1,67 @@
+@model IEnumerable<SistemaTurnos.Models.Turn>
+@using SistemaTurnos.Models
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- ZONA 1: BUSCAR DNI -->
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm border-info">
+                <div class="card-body">
+                    <h5><i class="fas fa-user-plus"></i> Gestión de Clientes</h5>
+                    <div class="input-group">
+                        <input type="text" id="dni-busqueda" class="form-control"
+                               placeholder="Ingrese DNI para validar o registrar">
+                        <button class="btn btn-info" onclick="buscarORegistrar()">Validar Usuario</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ZONA 2: ATENCIÓN ACTUAL -->
+        <div class="col-md-4">
+            <div class="card shadow border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Panel de Atención</h4>
+                </div>
+                <div class="card-body text-center">
+                    <div id="atencion-vacia">
+                        <p class="text-muted">No hay ningún cliente en atención.</p>
+                        <button class="btn btn-lg btn-success" onclick="CallNext()">
+                            <i class="fas fa-bullhorn"></i> LLAMAR SIGUIENTE
+                        </button>
+                    </div>
+
+                    <div id="atencion-activa" style="display:none;">
+                        <h2 class="display-4 text-primary" id="txt-ticket">---</h2>
+                        <h3 id="txt-cliente">Nombre del Cliente</h3>
+                        <p class="badge bg-info" id="txt-prioridad">Normal</p>
+                        <hr/>
+                        <input type="hidden" id="hdn-turno-id"/>
+                        <button class="btn btn-danger" onclick="confirmFinish()">
+                            <i class="fas fa-check-circle"></i> Finalizar Atención
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="cancelAttention()">
+                            <i class="fas fa-times"></i> No se presentó
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ZONA 3: LISTA DE ESPERA -->
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">
+                    Turnos en Espera (<span id="contador-espera">0</span>)
+                </div>
+                <ul class="list-group list-group-flush" id="lista-espera">
+                    <!-- El JS llenará esto automáticamente -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/asesor.js"></script>
+}

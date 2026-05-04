@@ -1,0 +1,110 @@
+using Microsoft.EntityFrameworkCore;
+using SistemaTurnos.Data;
+using SistemaTurnos.Models;
+using SistemaTurnos.Responses;
+using SistemaTurnos.Services.Interfaces;
+
+namespace SistemaTurnos.Services;
+
+public class TurnService : ITurnService
+{
+    private readonly MysqlDbContext _context;
+
+    public TurnService(MysqlDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<ServiceResponse<Turn>> CreateTurnAsync(int userId, int priorityId)
+    {
+        try
+        {
+            // 1. Validar si el usuario ya tiene un turno activo
+            var tieneTurno = await _context.Turns.AnyAsync(t => t.UserId == userId &&
+                                                                (t.StatusId == (int)TurnoStatus.Pendiente ||
+                                                                 t.StatusId == (int)TurnoStatus.EnAtencion));
+
+            if (tieneTurno)
+                return ServiceResponse<Turn>.Error("El usuario ya tiene un turno en proceso.");
+
+            // 2. Lógica de Ticket (Letra + Número correlativo)
+            int totalHoy = await _context.Turns.CountAsync() + 1;
+            string letra = priorityId == (int)PriorityLevel.VIP ? "V" :
+                priorityId == (int)PriorityLevel.Prioritario ? "P" : "N";
+            string ticket = $"{letra}-{totalHoy.ToString("D3")}";
+
+            // 3. Creación del registro
+            var nuevoTurno = new Turn
+            {
+                UserId = userId,
+                PriorityId = priorityId,
+                StatusId = (int)TurnoStatus.Pendiente,
+                Ticket = ticket,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            _context.Turns.Add(nuevoTurno);
+            await _context.SaveChangesAsync();
+
+            // Incluimos el usuario para mostrar el nombre en el éxito del SweetAlert
+            await _context.Entry(nuevoTurno).Reference(t => t.User).LoadAsync();
+
+            return ServiceResponse<Turn>.Success(nuevoTurno, $"Ticket {ticket} generado correctamente.");
+        }
+        catch (Exception ex)
+        {
+            return ServiceResponse<Turn>.Error("Error técnico al generar turno: " + ex.Message);
+        }
+    }
+
+    public async Task<ServiceResponse<IEnumerable<Turn>>> GetCurrentQueueAsync()
+    {
+        var queue = await _context.Turns
+            .Include(t => t.User)
+            .Where(t => t.StatusId == (int)TurnoStatus.Pendiente)
+            .OrderByDescending(t => t.PriorityId)
+            .ThenBy(t => t.CreatedAt)
+            .ToListAsync();
+
+        return ServiceResponse<IEnumerable<Turn>>.Success(queue);
+    }
+
+    public async Task<ServiceResponse<int>> GetWaitingCountAsync()
+    {
+        int count = await _context.Turns.CountAsync(t => t.StatusId == (int)TurnoStatus.Pendiente);
+        return ServiceResponse<int>.Success(count);
+    }
+
+    public async Task<ServiceResponse<bool>> HasActiveTurnAsync(int userId)
+    {
+        bool active =
+            await _context.Turns.AnyAsync(t => t.UserId == userId && t.StatusId == (int)TurnoStatus.Pendiente);
+        return ServiceResponse<bool>.Success(active);
+    }
+
+    public async Task<ServiceResponse<Turn>> GetCurrentCallingAsync()
+    {
+        var turn = await _context.Turns
+            .Include(t => t.User)
+            .Where(t => t.StatusId == (int)TurnoStatus.EnAtencion)
+            .OrderByDescending(t => t.UpdatedAt)
+            .FirstOrDefaultAsync();
+
+        return turn != null
+            ? ServiceResponse<Turn>.Success(turn)
+            : ServiceResponse<Turn>.Error("No hay turnos en atención");
+    }
+
+    public async Task<ServiceResponse<IEnumerable<Turn>>> GetWaitingListForDisplayAsync(int limit)
+    {
+        var list = await _context.Turns
+            .Where(t => t.StatusId == (int)TurnoStatus.Pendiente)
+            .OrderByDescending(t => t.PriorityId)
+            .ThenBy(t => t.CreatedAt)
+            .Take(limit)
+            .ToListAsync();
+
+        return ServiceResponse<IEnumerable<Turn>>.Success(list);
+    }
+}

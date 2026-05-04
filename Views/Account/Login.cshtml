@@ -1,0 +1,91 @@
+@{
+    Layout = "_Layout"; // Usa tu layout general para heredar Bootstrap y el Navbar
+    ViewData["Title"] = "Ingreso al Sistema";
+}
+
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3 class="mb-0"><i class="fas fa-lock me-2"></i> Sistema de Turnos</h3>
+                    <small>Panel de Gestión Administrativa</small>
+                </div>
+                <div class="card-body p-5">
+                    <div id="login-form">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Usuario</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fas fa-user"></i></span>
+                                <input type="text" id="username" class="form-control" placeholder="Ej: jose_asesor"
+                                       autofocus>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Contraseña</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fas fa-key"></i></span>
+                                <input type="password" id="password" class="form-control" placeholder="••••••••">
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-lg shadow-sm" onclick="iniciarSesion()">
+                                <i class="fas fa-sign-in-alt me-2"></i> Ingresar al Panel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center py-3 bg-light">
+                    <p class="text-muted small mb-0">Gestión de Turnos &copy; 2026 - Riwi Academy</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function iniciarSesion() {
+            const usuario = $("#username").val();
+            const clave = $("#password").val();
+
+            if (!usuario || !clave) {
+                Swal.fire('Atención', 'Por favor completa todos los campos', 'warning');
+                return;
+            }
+
+            // Mostrar un "Cargando" para mejor experiencia
+            Swal.showLoading();
+
+            $.post('/Account/Login', {username: usuario, password: clave}, function (res) {
+                if (res.success) {
+                    Swal.fire({
+                        title: '¡Bienvenido!',
+                        text: 'Redireccionando al panel...',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = res.redirectUrl;
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error de Acceso',
+                        text: res.message,
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6'
+                    });
+                }
+            }).fail(function () {
+                Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+            });
+        }
+
+        // Permitir presionar "Enter" para entrar
+        $("#password").keypress(function (e) {
+            if (e.which == 13) iniciarSesion();
+        });
+    </script>
+}
