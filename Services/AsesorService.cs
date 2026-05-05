@@ -42,6 +42,10 @@ public class AsesorService : IAsesorService
 
             if (next == null)
                 return ServiceResponse<Turn>.Error("No hay turnos pendientes.");
+            
+            var atencion = await _context.Turns.Where(turno => turno.StatusId == (int)TurnoStatus.EnAtencion && turno.StaffId == staffId).FirstOrDefaultAsync();
+            if (atencion != null)
+                return ServiceResponse<Turn>.Error("No debe llamar un turno sin completar el actual");
 
             next.StatusId = (int)TurnoStatus.EnAtencion;
             next.StaffId = staffId;

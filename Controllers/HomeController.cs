@@ -37,15 +37,32 @@ public class HomeController : Controller
         return View(currentResponse.Data);
     }
     
+    // [HttpGet]
+    // public async Task<IActionResult> GetSalaData()
+    // {
+    //     var response = await _turnService.GetCurrentCallingAsync();
+    //     return Json(new { 
+    //         success = response.Status, 
+    //         ticket = response.Data?.Ticket ?? "---" 
+    //     });
+    // }
+    
     [HttpGet]
     public async Task<IActionResult> GetSalaData()
     {
-        var response = await _turnService.GetCurrentCallingAsync();
+        var actual = await _turnService.GetCurrentCallingAsync();
+        var siguientes = await _turnService.GetWaitingListForDisplayAsync(5);
+
         return Json(new { 
-            success = response.Status, 
-            ticket = response.Data?.Ticket ?? "---" 
+            success = actual.Status, 
+            // Datos del turno actual
+            ticket = actual.Data?.Ticket ?? "---",
+            cliente = actual.Data != null ? $"{actual.Data.User.Name} {actual.Data.User.LastName}" : "OFICINA DISPONIBLE",
+            // Lista de los siguientes 
+            proximos = siguientes.Data.Select(t => new { t.Ticket})
         });
     }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

@@ -1,62 +1,126 @@
 @model SistemaTurnos.Models.Turn
 @{
     Layout = "_Layout";
+    ViewData["Title"] = "Sala de Espera";
+    ViewData["FullWidth"] = true;
     var siguientes = ViewBag.Siguientes as IEnumerable<SistemaTurnos.Models.Turn>;
 }
 
-<div class="container-fluid bg-dark text-white vh-100 p-5">
-    <div class="row h-100">
-        <!-- IZQUIERDA: LLAMADO ACTUAL -->
-        <div class="col-md-8 d-flex flex-column justify-content-center align-items-center border-end border-secondary">
-            <h1 class="display-1 fw-bold text-info">TURNO ACTUAL</h1>
-            <div class="text-center">
-                @if (Model != null) {
-                    <span class="display-1 fw-bold" style="font-size: 12rem;" id="txt-sala-ticket">@Model.Ticket</span>
-                    <h2 class="display-3 text-uppercase text-white">@Model.User.Name @Model.User.LastName</h2>
-                } else {
-                    <span class="display-1 text-muted" style="font-size: 8rem;">---</span>
-                    <h2 class="display-4 text-muted">ESPERANDO...</h2>
-                }
-            </div>
-        </div>
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="~/css/sala-espera.css" asp-append-version="true"/>
+}
 
-        <!-- DERECHA: SIGUIENTES -->
-        <div class="col-md-4 ps-5">
-            <h2 class="text-secondary border-bottom border-secondary pb-3 mb-4">PRÓXIMOS</h2>
-            <div id="lista-sala-espera">
-                @if (siguientes != null) {
-                    foreach (var item in siguientes) {
-                        <div class="d-flex justify-content-between mb-4 border-bottom border-secondary pb-2">
-                            <span class="h1 fw-bold text-info">@item.Ticket</span>
-                            <span class="h1 text-muted">@item.CreatedAt.ToString()</span>
-                        </div>
-                    }
-                }
+<div class="sala-wrapper">
+    
+    <div class="container-fluid h-100 p-0">
+        <div class="row g-0 h-100">
+            <!-- IZQUIERDA: LLAMADO ACTUAL -->
+            <div class="col-md-8 d-flex flex-column align-items-center justify-content-center sala-left">
+                <p class="sala-label-actual">
+                    <span class="sala-dot-pulse me-2"></span>TURNO ACTUAL
+                </p>
+                <div class="text-center" id="contenedor-principal">
+                    <!-- Se llenará con JS -->
+                    <span class="display-1 fw-bold sala-ticket-num" style="font-size: 12rem;" id="txt-sala-ticket">---</span>
+                    <h2 class="display-3 text-uppercase text-white sala-ticket-name" id="txt-sala-nombre">ESPERANDO...</h2>
+                </div>
+            </div>
+
+            <!-- DERECHA: SIGUIENTES -->
+            <div class="col-md-4 d-flex flex-column sala-right">
+                <div class="sala-right-header">
+                    <i class="fas fa-list-ol me-2"></i>PRÓXIMOS
+                </div>
+                @* <h2 class="text-secondary border-bottom border-secondary pb-3 mb-4">PRÓXIMOS</h2> *@
+                <div id="lista-sala-espera">
+                    <!-- Se llenará con JS -->
+                </div>
             </div>
         </div>
     </div>
+
 </div>
 
-<!-- Sonido de notificación -->
-<audio id="audio-notificacion" src="~/fifo.mp3"></audio>
+<audio id="audio-notificacion" preload="auto">
+    <source src="~/fifo.mp3" type="audio/mp3">
+</audio>
 
 @section Scripts {
     <script src="~/js/home.js"></script>
     <script>
-        let ultimoTicket = "@(Model?.Ticket ?? "")";
+        // Polling de cambios — funcionalidad original intacta
+        let ultimoTicket = ""; // Se queda grabada en la memoria del navegador
 
         function refrescarSala() {
-            $.get('/Home/GetSalaData', function(data) {
-                // Comparamos el ticket que devuelve el JSON con el que tenemos en pantalla
-                if (data.success && data.ticket !== ultimoTicket) {
-                    document.getElementById('audio-notificacion').play();
-                    ultimoTicket = data.ticket;
-                    // Recargamos para actualizar nombres y lista de espera
-                    setTimeout(() => { location.reload(); }, 1500);
+            $.get('/Home/GetSalaData', function(res) {
+
+                // VALIDACIÓN DE CAMBIO: 
+                // Si el ticket que llega es diferente al que tengo Y no está vacío...
+                if (res.ticket !== ultimoTicket && res.ticket !== "---") {
+
+                    // 1. DISPARAR SONIDO
+                    const sonido = document.getElementById('audio-notificacion');
+                    sonido.play().catch(error => {
+                        console.log("El navegador bloqueó el sonido. Haz un clic en la pantalla.");
+                    });
+
+                    // 2. CAMBIAR TEXTO CON ANIMACIÓN
+                    $("#txt-sala-ticket").fadeOut(300, function() {
+                        $(this).text(res.ticket).fadeIn(300);
+                    });
+
+                    $("#txt-sala-nombre").fadeOut(300, function() {
+                        $(this).text(res.cliente).fadeIn(300);
+                    });
+
+                    // 3. ACTUALIZAR MEMORIA
+                    ultimoTicket = res.ticket;
                 }
+                // Si el asesor terminó todo y el ticket ahora es "---"
+                else if (res.ticket === "---" && ultimoTicket !== "") {
+                    $("#txt-sala-ticket").text("---");
+                    $("#txt-sala-nombre").text("OFICINA DISPONIBLE");
+                    ultimoTicket = "";
+                }
+
+                // Actualizar lista lateral siempre
+                actualizarListaLateral(res.proximos);
             });
         }
-        // Consultar cambios cada 5 segundos
+
+
+        function actualizarListaLateral(proximos) {
+            let listaHtml = "";
+
+            // Validamos que existan turnos en la cola
+            if (proximos && proximos.length > 0) {
+                proximos.forEach(turno => {
+                    // Usamos el diseño de DIVS grandes para que se vea bien en TV
+                    listaHtml += `
+                <div class="d-flex justify-content-center mb-4 border-bottom border-secondary pt-2 pb-2 animate__animated animate__fadeIn">
+                    <span class="h1 fw-bold text-info">${turno.ticket}</span>
+                </div>`;
+                });
+            } else {
+                // Mensaje elegante si la fila está vacía
+                listaHtml = `<div class="text-center mt-5 text-muted h4">Sin turnos en espera</div>`;
+            }
+
+            // Inyectamos en el contenedor de la sala de espera
+            $("#lista-sala-espera").html(listaHtml);
+        }
+
+
+
         setInterval(refrescarSala, 5000);
+        // Reloj en tiempo real
+        @* function actualizarReloj() { *@
+        @*     const now = new Date(); *@
+        @*     document.getElementById('sala-reloj').textContent = *@
+        @*         now.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); *@
+        @* } *@
+        @* actualizarReloj(); *@
+        @* setInterval(actualizarReloj, 1000); *@
     </script>
 }

@@ -1,44 +1,54 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - SistemaTurnos</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.24/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.24/dist/sweetalert2.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/SistemaTurnos.styles.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true"/>
+    @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
+<body class="lyt-body">
+
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SistemaTurnos</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+    <nav class="navbar navbar-expand-sm sticky-top lyt-navbar">
+        <div class="container-fluid px-4">
+
+            <a class="navbar-brand lyt-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                Sistema<span>Turnos</span>
+            </a>
+
+            <button class="navbar-toggler border-0" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navMain"
+                    aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars" style="color:rgba(255,255,255,0.6)"></i>
             </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
+
+            <div class="collapse navbar-collapse" id="navMain">
+                <ul class="navbar-nav ms-auto align-items-center gap-1">
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        <a class="nav-link lyt-nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                            <i class="fas fa-home fa-sm me-1"></i>Inicio
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                    @if (User.Identity.IsAuthenticated)
+
+                    <div class="lyt-nav-sep"></div>
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                        <li class="nav-item d-flex align-items-center">
-                            <span class="nav-link text-dark me-3">
-                                <i class="fas fa-user-circle"></i> Hola, <strong>@User.Identity.Name</strong>
-                            </span>
+                        <li class="nav-item d-flex align-items-center lyt-nav-user">
+                            <i class="fas fa-user-circle me-2"></i>
+                            Hola, <strong class="ms-1">@User.Identity.Name</strong>
                         </li>
                         <li class="nav-item">
-                            <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
-                                <button type="submit" class="btn btn-outline-danger btn-sm">
-                                    <i class="fas fa-sign-out-alt"></i> Salir
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="btn lyt-btn-salir btn-sm">
+                                    <i class="fas fa-sign-out-alt me-1"></i>Salir
                                 </button>
                             </form>
                         </li>
@@ -46,25 +56,49 @@
                     else
                     {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Ingresar</a>
+                            <a class="nav-link lyt-nav-link lyt-nav-cta"
+                               asp-controller="Account" asp-action="Login">
+                                <i class="fas fa-sign-in-alt fa-sm me-1"></i>Ingresar
+                            </a>
                         </li>
                     }
                 </ul>
             </div>
+
         </div>
     </nav>
 </header>
-<div class="container">
-    <main role="main" class="pb-3">
+
+@if (ViewData["FullWidth"] != null && (bool)ViewData["FullWidth"])
+{
+    <main role="main">
         @RenderBody()
     </main>
-</div>
+}
+else
+{
+    <div class="container py-4">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+}
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2026 - SistemaTurnos - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+<footer class="lyt-footer mt-auto">
+    <div class="container-fluid px-4">
+        <div class="d-flex align-items-center justify-content-between py-3">
+            <span class="lyt-ft-copy">
+                &copy; 2026 &mdash; Sistema<span>Turnos</span> &mdash; Tren Cosmos
+            </span>
+            <div class="d-flex align-items-center gap-3">
+                <a class="lyt-ft-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
+                <span class="lyt-ft-sep">·</span>
+                <a class="lyt-ft-link" asp-controller="Account" asp-action="Login">Acceso</a>
+            </div>
+        </div>
     </div>
 </footer>
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.24/dist/sweetalert2.all.min.js"></script>

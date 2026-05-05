@@ -1,0 +1,213 @@
+:root {
+    --navy:   #0d1f3c;
+    --gold:   #c4a050;
+    --cream:  #f0e6c8;
+}
+
+/* Wrapper full width */
+.ap-wrapper {
+    background: var(--navy);
+    min-height: calc(100vh - 58px); /* descuenta el navbar */
+    font-family: 'Lato', sans-serif;
+}
+
+/* Top bar */
+.ap-topbar {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.ap-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--cream);
+    font-size: 20px;
+}
+
+.ap-badge-estado {
+    background: rgba(196,160,80,0.15);
+    border: 1px solid rgba(196,160,80,0.3);
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+/* Cards — Bootstrap maneja border, shadow, border-radius */
+.ap-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+.ap-card-header {
+    background: transparent;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 12px 16px;
+}
+
+.ap-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+.ap-panel-title {
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: rgba(255,255,255,0.45);
+}
+
+/* Labels y campos */
+.ap-field-label {
+    color: rgba(255,255,255,0.4);
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.ap-input-group {
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.ap-input-group:focus-within {
+    border-color: rgba(196,160,80,0.5);
+    box-shadow: 0 0 0 3px rgba(196,160,80,0.08);
+}
+
+.ap-input-group .form-control {
+    background: rgba(255,255,255,0.05);
+    border: none;
+    color: var(--cream);
+    box-shadow: none;
+}
+
+.ap-input-group .form-control::placeholder { color: rgba(255,255,255,0.2); }
+.ap-input-group .form-control:focus {
+    background: rgba(255,255,255,0.05);
+    color: var(--cream);
+    box-shadow: none;
+}
+
+/* Info box */
+.ap-info-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.ap-info-key { color: rgba(255,255,255,0.35); font-size: 11px; }
+.ap-info-val { color: var(--cream); font-size: 12px; font-weight: 700; }
+
+/* Ticket */
+.ap-ticket-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    line-height: 1;
+}
+
+.ap-ticket-name { color: var(--cream); font-size: 15px; font-weight: 700; margin: 8px 0 6px; }
+
+.ap-ticket-badge {
+    background: rgba(29,158,117,0.2) !important;
+    border: 1px solid rgba(29,158,117,0.4);
+    color: #5DCAA5 !important;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.ap-divider {
+    border-color: rgba(255,255,255,0.07);
+}
+
+/* Botones — Bootstrap maneja display y tamaño, solo colores */
+.ap-btn-gold {
+    background: linear-gradient(135deg, #b8922a, #c4a050);
+    border: none;
+    color: var(--navy);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.8px;
+}
+
+.ap-btn-gold:hover { opacity: 0.88; color: var(--navy); }
+
+.ap-btn-call {
+    background: linear-gradient(135deg, #0F6E56, #1D9E75);
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.8px;
+}
+
+.ap-btn-call:hover { opacity: 0.88; color: #fff; }
+
+.ap-btn-finish {
+    background: linear-gradient(135deg, #993556, #D4537E);
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.8px;
+}
+
+.ap-btn-finish:hover { opacity: 0.88; color: #fff; }
+
+.ap-btn-absent {
+    background: transparent;
+    border: 1px solid rgba(212,83,126,0.4);
+    color: #D4537E;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.8px;
+}
+
+.ap-btn-absent:hover { background: rgba(212,83,126,0.08); color: #D4537E; }
+
+/* Empty state */
+.ap-empty-icon { font-size: 32px; color: rgba(255,255,255,0.15); }
+.ap-empty-text  { color: rgba(255,255,255,0.3); font-size: 13px; }
+
+/* Queue list — Bootstrap list-group maneja la estructura */
+.ap-queue-list .list-group-item {
+    background: transparent;
+    border-color: rgba(255,255,255,0.05);
+    color: var(--cream);
+}
+
+.ap-counter {
+    background: rgba(196,160,80,0.18) !important;
+    color: var(--gold) !important;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* Prioridad badges — para los items que genera el JS */
+.badge-normal {
+    background: rgba(59,107,17,0.2);
+    color: #97C459;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 700;
+}
+
+.badge-vip {
+    background: rgba(196,160,80,0.2);
+    color: var(--gold);
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 700;
+}

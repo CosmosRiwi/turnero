@@ -1,0 +1,120 @@
+/* Solo colores, fuentes y detalles que Bootstrap no tiene */
+
+.login-page {
+    background: linear-gradient(135deg, #0a1628 0%, #112244 60%, #1a3060 100%);
+}
+
+/* Card */
+.login-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.login-card .card-header {
+    background: rgba(196, 160, 80, 0.10);
+    border-bottom: 1px solid rgba(196, 160, 80, 0.25);
+    padding: 2rem;
+}
+
+.logo-ring {
+    width: 64px;
+    height: 64px;
+    border: 2px solid #c4a050;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.logo-ring i {
+    color: #c4a050;
+    font-size: 24px;
+}
+
+.login-card .card-header h3 {
+    font-family: 'Playfair Display', serif;
+    color: #f0e6c8;
+    font-size: 22px;
+    margin: 0 0 4px;
+}
+
+.login-card .card-header small {
+    color: rgba(196, 160, 80, 0.8);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+/* Labels */
+.field-label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+/* Input group — solo colores, Bootstrap maneja el resto */
+.login-input-group {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.login-input-group:focus-within {
+    border-color: rgba(196, 160, 80, 0.6);
+    box-shadow: 0 0 0 3px rgba(196, 160, 80, 0.08);
+}
+
+.login-input-group .input-group-text {
+    background: rgba(255, 255, 255, 0.04);
+    border: none;
+    color: rgba(196, 160, 80, 0.7);
+}
+
+.login-input-group .form-control {
+    background: rgba(255, 255, 255, 0.04);
+    border: none;
+    color: #f0e6c8;
+    box-shadow: none;
+}
+
+.login-input-group .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.login-input-group .form-control:focus {
+    background: rgba(255, 255, 255, 0.04);
+    color: #f0e6c8;
+    box-shadow: none;
+}
+
+/* Botón — Bootstrap maneja tamaño y display, solo colores */
+.btn-gold {
+    background: linear-gradient(135deg, #b8922a, #c4a050, #d4b060);
+    border: none;
+    color: #0a1628;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-gold:hover  { opacity: 0.9; transform: translateY(-1px); color: #0a1628; }
+.btn-gold:active { transform: translateY(0); }
+
+/* Footer */
+.login-card .card-footer {
+    background: transparent;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.login-card .card-footer p {
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 11px;
+    margin: 0;
+}
