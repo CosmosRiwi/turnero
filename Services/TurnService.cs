@@ -101,9 +101,11 @@ public class TurnService : ITurnService
             .OrderByDescending(t => t.UpdatedAt)
             .FirstOrDefaultAsync();
 
-        return turn != null
-            ? ServiceResponse<Turn>.Success(turn)
-            : ServiceResponse<Turn>.Error("No hay turnos en atención");
+        // Si es nulo, mandamos Success pero con Data nula para que el JS sepa que "no hay nadie"
+        if (turn == null) 
+            return ServiceResponse<Turn>.Success(null, "No hay turnos activos");
+
+        return ServiceResponse<Turn>.Success(turn);
     }
 
     public async Task<ServiceResponse<IEnumerable<Turn>>> GetWaitingListForDisplayAsync(int limit)
