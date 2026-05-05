@@ -1,0 +1,155 @@
+/* Wrapper */
+.sala-wrapper {
+    background: #0a1628;
+    min-height: calc(100vh - 58px);
+    font-family: 'Lato', sans-serif;
+}
+
+/* ── IZQUIERDA ───────────────────────────── */
+.sala-left {
+    border-right: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 3rem;
+    min-height: calc(100vh - 58px);
+}
+
+.sala-label-actual {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Dot animado */
+.sala-dot-pulse {
+    width: 10px;
+    height: 10px;
+    background: #1D9E75;
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* Número de ticket — tipografía es custom, Bootstrap no tiene esto */
+.sala-ticket-num {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(6rem, 15vw, 12rem);
+    color: #c4a050;
+    line-height: 1;
+    letter-spacing: 4px;
+    text-align: center;
+}
+
+.sala-ticket-vacio {
+    color: rgba(255, 255, 255, 0.15);
+}
+
+.sala-ticket-name {
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    color: #f0e6c8;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.sala-text-muted {
+    color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Badge en atención — Bootstrap maneja .badge, solo colores */
+.sala-badge-atencion {
+    background: rgba(29, 158, 117, 0.2) !important;
+    border: 1px solid rgba(29, 158, 117, 0.4);
+    color: #5DCAA5 !important;
+    font-size: 13px;
+    letter-spacing: 1px;
+    padding: 8px 20px;
+}
+
+/* ── DERECHA ─────────────────────────────── */
+.sala-right {
+    background: rgba(255, 255, 255, 0.02);
+    min-height: calc(100vh - 58px);
+}
+
+.sala-right-header {
+    background: rgba(196, 160, 80, 0.08);
+    border-bottom: 1px solid rgba(196, 160, 80, 0.2);
+    color: rgba(196, 160, 80, 0.8);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 18px 24px;
+}
+
+/* Items de la cola */
+.sala-queue {
+    overflow-y: auto;
+    padding: 12px 0;
+}
+
+.sala-queue-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.2s;
+}
+
+.sala-queue-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.sala-q-ticket {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #c4a050;
+    letter-spacing: 1px;
+}
+
+.sala-q-hora {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+/* Empty state */
+.sala-queue-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    color: rgba(255, 255, 255, 0.15);
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.sala-queue-empty i {
+    font-size: 2rem;
+    color: rgba(29, 158, 117, 0.3);
+}
+
+/* Footer con reloj */
+.sala-right-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 14px 24px;
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 13px;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+}

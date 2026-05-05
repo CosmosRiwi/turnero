@@ -1,0 +1,100 @@
+/* Wrapper full height */
+.home-wrapper {
+    background: linear-gradient(135deg, #0a1628 0%, #112244 60%, #1a3060 100%);
+    min-height: calc(100vh - 58px); /* descuenta navbar */
+    padding: 40px 0;
+}
+
+/* Card — Bootstrap maneja shadow, border-radius, padding */
+.home-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 20px;
+    padding: 3rem 2.5rem;
+    backdrop-filter: blur(4px);
+}
+
+/* Ícono decorativo */
+.home-icon-ring {
+    width: 80px;
+    height: 80px;
+    border: 2px solid #c4a050;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-icon-ring i {
+    color: #c4a050;
+    font-size: 30px;
+}
+
+/* Títulos */
+.home-title {
+    font-family: 'Playfair Display', serif;
+    color: #f0e6c8;
+    font-size: 28px;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.home-subtitle {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 14px;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* Input — Bootstrap maneja tamaño y display, solo colores */
+.home-input {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    color: #f0e6c8;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.home-input:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(196, 160, 80, 0.6);
+    box-shadow: 0 0 0 3px rgba(196, 160, 80, 0.1);
+    color: #f0e6c8;
+}
+
+.home-input::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+}
+
+/* Botón — Bootstrap maneja display y tamaño, solo colores */
+.home-btn-ticket {
+    background: linear-gradient(135deg, #b8922a, #c4a050, #d4b060);
+    border: none;
+    border-radius: 12px;
+    color: #0a1628;
+    font-family: 'Lato', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 16px;
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+.home-btn-ticket:hover  { opacity: 0.9; transform: translateY(-1px); color: #0a1628; }
+.home-btn-ticket:active { transform: translateY(0); color: #0a1628; }
+
+/* Link admin */
+.home-link-admin {
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 12px;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+}
+
+.home-link-admin:hover { color: #c4a050; }
