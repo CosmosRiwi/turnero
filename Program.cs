@@ -19,6 +19,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITurnService, TurnService>();
 builder.Services.AddScoped<IAsesorService, AsesorService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPrinterService, PrinterService>();
+
 
 // Activar Autenticación por Cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

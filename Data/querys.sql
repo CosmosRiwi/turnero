@@ -68,3 +68,6 @@ INSERT INTO priorities (name) VALUES ('Normal'), ('Prioritario'), ('VIP');
 
 -- Comando para ejecutar la migración del database firts
 dotnet ef dbcontext scaffold "Server=157.180.40.190;Database=sistema_turnos;Uid=root;Pwd=CosmosGalaxy;" Pomelo.EntityFrameworkCore.MySql -o Models --context MysqlDbContext --context-dir Data --force
+       
+       sudo chown $USER:$USER /dev/usb/lp0
+       sudo chmod 666 /dev/usb/lp0

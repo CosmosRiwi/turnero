@@ -9,17 +9,18 @@ namespace SistemaTurnos.Services;
 public class TurnService : ITurnService
 {
     private readonly MysqlDbContext _context;
-
-    public TurnService(MysqlDbContext context)
+    private readonly IPrinterService _printerService; // Inyectamos la interfaz
+    public TurnService(MysqlDbContext context, IPrinterService printerService)
     {
         _context = context;
+        _printerService = printerService;
     }
 
     public async Task<ServiceResponse<Turn>> CreateTurnAsync(int userId, int priorityId)
     {
         try
         {
-            // 1. Validar si el usuario ya tiene un turno activo
+            // 1. Validaciones previas (Igual que antes)
             var tieneTurno = await _context.Turns.AnyAsync(t => t.UserId == userId &&
                                                                 (t.StatusId == (int)TurnoStatus.Pendiente ||
                                                                  t.StatusId == (int)TurnoStatus.EnAtencion));
@@ -27,7 +28,7 @@ public class TurnService : ITurnService
             if (tieneTurno)
                 return ServiceResponse<Turn>.Error("El usuario ya tiene un turno en proceso.");
 
-            // 2. Lógica de Ticket (Letra + Número correlativo)
+            // 2. Lógica de Ticket (Igual que antes)
             int totalHoy = await _context.Turns.CountAsync() + 1;
             string letra = priorityId == (int)PriorityLevel.VIP ? "V" :
                 priorityId == (int)PriorityLevel.Prioritario ? "P" : "N";
@@ -47,8 +48,17 @@ public class TurnService : ITurnService
             _context.Turns.Add(nuevoTurno);
             await _context.SaveChangesAsync();
 
-            // Incluimos el usuario para mostrar el nombre en el éxito del SweetAlert
+            // 4. Cargar relaciones para el ticket físico y el SweetAlert
             await _context.Entry(nuevoTurno).Reference(t => t.User).LoadAsync();
+            await _context.Entry(nuevoTurno).Reference(t => t.Priority).LoadAsync();
+
+            // 5. LLAMADA MÁGICA A LA IMPRESORA
+            // Pasamos los datos reales: Ticket, Nombre y el nombre de la Prioridad (VIP, etc)
+            _printerService.ImprimirTicket(
+                nuevoTurno.Ticket, 
+                $"{nuevoTurno.User.Name} {nuevoTurno.User.LastName}", 
+                nuevoTurno.Priority.Name
+            );
 
             return ServiceResponse<Turn>.Success(nuevoTurno, $"Ticket {ticket} generado correctamente.");
         }
