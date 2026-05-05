@@ -141,4 +141,29 @@ public class AsesorController : Controller
 
         return Json(new { success = false, message = response.Message });
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> GetActiveTurn()
+    {
+        var claimId = User.FindFirst("StaffId")?.Value ?? "1";
+        int staffId = int.Parse(claimId);
+
+        var response = await _asesorService.GetActiveTurn(staffId);
+    
+        if (response.Status && response.Data != null)
+        {
+            // Creamos un objeto anónimo limpio para evitar el error 500
+            return Json(new { 
+                status = true, 
+                data = new {
+                    id = response.Data.Id,
+                    ticket = response.Data.Ticket,
+                    cliente = $"{response.Data.User.Name} {response.Data.User.LastName}",
+                    prioridad = response.Data.Priority?.Name ?? "Normal"
+                }
+            });
+        }
+    
+        return Json(new { status = false });
+    }
 }

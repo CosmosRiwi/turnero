@@ -16,4 +16,7 @@ public interface IAsesorService
 
     // Listar turnos para el dashboard del asesor
     Task<ServiceResponse<IEnumerable<Turn>>> GetTurnByStatusAsync(int? statusId);
+    
+    // Mirar si el asesor tiene turnos pendientes al entrar o refrescar
+    Task<ServiceResponse<Turn>> GetActiveTurn(int staffId);
 }

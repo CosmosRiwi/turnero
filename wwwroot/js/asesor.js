@@ -192,9 +192,32 @@ async function registrarNuevoUsuario(dni) {
     }
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    // También la ejecutamos una vez al cargar la página
+    updateWaitList();
+    // Ejecutar cada 10 segundos (10000 milisegundos)
+    setInterval(updateWaitList, 10000);
+    
+    $.get('/Asesor/GetActiveTurn', function(res) {
+        // Usamos res.Status porque es lo que devuelve tu ServiceResponse
+        if (res.Status) {
+            // Ocultamos el mensaje de "No hay nadie" y mostramos el panel activo
+            $("#atencion-vacia").hide();
+            $("#atencion-activa").show();
 
-// Ejecutar cada 10 segundos (10000 milisegundos)
-setInterval(updateWaitList, 10000);
+            // Llenamos los datos con lo que trajo el servicio
+            $("#txt-ticket").text(res.Data.Ticket);
+            $("#txt-cliente").text(res.Data.User.Name + " " + res.Data.User.LastName);
+            $("#hdn-turno-id").val(res.Data.Id);
+            $("#txt-prioridad").text(res.Data.Priority.Name);
 
-// También la ejecutamos una vez al cargar la página
-document.addEventListener('DOMContentLoaded', updateWaitList);
+            Swal.fire({
+                title: 'Sesión Recuperada',
+                text: 'Tienes una atención en curso: ' + res.Data.Ticket,
+                icon: 'info',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    });
+});

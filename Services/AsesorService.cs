@@ -131,4 +131,19 @@ public class AsesorService : IAsesorService
             return ServiceResponse<Turn>.Error("Problemas internos: " + e.Message);
         }
     }
+    
+    public async Task<ServiceResponse<Turn>> GetActiveTurn(int staffId)
+    {
+        // Buscamos si este asesor ya tiene un turno marcado como "EnAtencion"
+        var activeTurn = await _context.Turns
+            .Include(t => t.User)
+            .Include(t => t.Priority)
+            .FirstOrDefaultAsync(t => t.StaffId == staffId && t.StatusId == (int)TurnoStatus.EnAtencion);
+
+        if (activeTurn != null)
+            return ServiceResponse<Turn>.Success(activeTurn);
+
+        return ServiceResponse<Turn>.Error("Sin turnos pendientes");
+    }
+    
 }
