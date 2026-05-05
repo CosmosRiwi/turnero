@@ -1,63 +1,122 @@
 @model IEnumerable<SistemaTurnos.Models.Turn>
 @using SistemaTurnos.Models
 
-<div class="container-fluid mt-4">
-    <div class="row">
-        <!-- ZONA 1: BUSCAR DNI -->
-        <div class="col-md-4">
-            <div class="card mb-4 shadow-sm border-info">
-                <div class="card-body">
-                    <h5><i class="fas fa-user-plus"></i> Gestión de Clientes</h5>
-                    <div class="input-group">
-                        <input type="text" id="dni-busqueda" class="form-control"
-                               placeholder="Ingrese DNI para validar o registrar">
-                        <button class="btn btn-info" onclick="buscarORegistrar()">Validar Usuario</button>
+@{
+    ViewData["Title"] = "Panel del Asesor";
+    ViewData["FullWidth"] = true;
+}
+
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="~/css/asesor.css" asp-append-version="true"/>
+}
+
+<div class="ap-wrapper">
+
+ 
+    <div class="d-flex align-items-center justify-content-between px-4 py-3 ap-topbar">
+        <h1 class="ap-title mb-0">Panel del Asesor</h1>
+        <span class="badge rounded-pill ap-badge-estado" id="badge-estado">&#9679; Sin turno activo</span>
+    </div>
+
+  
+    <div class="container-fluid px-4 py-3">
+        <div class="row g-3">
+
+           
+            <div class="col-lg-4">
+                <div class="card h-100 ap-card">
+                    <div class="card-header d-flex align-items-center gap-2 ap-card-header">
+                        <span class="ap-dot" style="background:#c4a050"></span>
+                        <span class="ap-panel-title">Gestión de clientes</span>
+                    </div>
+                    <div class="card-body">
+                        <label class="ap-field-label mb-2 d-block">Documento</label>
+                        <div class="input-group ap-input-group">
+                            <input type="text" id="dni-busqueda" class="form-control ap-input"
+                                   placeholder="Ej: 1234567890">
+                            <button class="btn ap-btn-gold" onclick="buscarORegistrar()">Validar</button>
+                        </div>
+
+                        <div class="mt-3 ap-info-box" id="cliente-info" style="display:none">
+                            <div class="d-flex justify-content-between py-1">
+                                <span class="ap-info-key">Nombre</span>
+                                <span class="ap-info-val" id="cli-nombre">—</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-1">
+                                <span class="ap-info-key">Documento</span>
+                                <span class="ap-info-val" id="cli-doc">—</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-1">
+                                <span class="ap-info-key">Estado</span>
+                                <span class="ap-info-val" id="cli-estado">—</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- ZONA 2: ATENCIÓN ACTUAL -->
-        <div class="col-md-4">
-            <div class="card shadow border-primary">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Panel de Atención</h4>
-                </div>
-                <div class="card-body text-center">
-                    <div id="atencion-vacia">
-                        <p class="text-muted">No hay ningún cliente en atención.</p>
-                        <button class="btn btn-lg btn-success" onclick="CallNext()">
-                            <i class="fas fa-bullhorn"></i> LLAMAR SIGUIENTE
-                        </button>
+          
+            <div class="col-lg-4">
+                <div class="card h-100 ap-card">
+                    <div class="card-header d-flex align-items-center gap-2 ap-card-header">
+                        <span class="ap-dot" style="background:#D4537E"></span>
+                        <span class="ap-panel-title">Atención actual</span>
                     </div>
+                    <div class="card-body d-flex flex-column">
 
-                    <div id="atencion-activa" style="display:none;">
-                        <h2 class="display-4 text-primary" id="txt-ticket">---</h2>
-                        <h3 id="txt-cliente">Nombre del Cliente</h3>
-                        <p class="badge bg-info" id="txt-prioridad">Normal</p>
-                        <hr/>
-                        <input type="hidden" id="hdn-turno-id"/>
-                        <button class="btn btn-danger" onclick="confirmFinish()">
-                            <i class="fas fa-check-circle"></i> Finalizar Atención
-                        </button>
-                        <button class="btn btn-outline-danger" onclick="cancelAttention()">
-                            <i class="fas fa-times"></i> No se presentó
-                        </button>
+                        <div id="atencion-vacia" class="d-flex flex-column align-items-center justify-content-center flex-grow-1 gap-3">
+                            <div class="ap-empty-icon">&#9711;</div>
+                            <p class="text-center mb-0 ap-empty-text">No hay ningún cliente en atención</p>
+                            <button class="btn w-100 ap-btn-call" onclick="CallNext()">
+                                <i class="fas fa-bullhorn me-2"></i>Llamar siguiente
+                            </button>
+                        </div>
+
+                        <div id="atencion-activa" style="display:none">
+                            <div class="text-center py-2">
+                                <div class="ap-ticket-num" id="txt-ticket">---</div>
+                                <div class="ap-ticket-name" id="txt-cliente">—</div>
+                                <span class="badge rounded-pill ap-ticket-badge" id="txt-prioridad">Normal</span>
+                            </div>
+                            <hr class="ap-divider"/>
+                            <div class="ap-info-box mb-3">
+                                <div class="d-flex justify-content-between py-1">
+                                    <span class="ap-info-key">Documento</span>
+                                    <span class="ap-info-val" id="txt-doc">—</span>
+                                </div>
+                                <div class="d-flex justify-content-between py-1">
+                                    <span class="ap-info-key">Hora llamado</span>
+                                    <span class="ap-info-val" id="txt-hora">—</span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="hdn-turno-id"/>
+                            <div class="d-grid gap-2">
+                                <button class="btn ap-btn-finish" onclick="confirmFinish()">
+                                    <i class="fas fa-check-circle me-2"></i>Finalizar atención
+                                </button>
+                                <button class="btn ap-btn-absent" onclick="cancelAttention()">
+                                    <i class="fas fa-times me-2"></i>No se presentó
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- ZONA 3: LISTA DE ESPERA -->
-        <div class="col-md-4">
-            <div class="card shadow">
-                <div class="card-header bg-dark text-white">
-                    Turnos en Espera (<span id="contador-espera">0</span>)
+            
+            <div class="col-lg-4">
+                <div class="card h-100 ap-card">
+                    <div class="card-header d-flex align-items-center gap-2 ap-card-header">
+                        <span class="ap-dot" style="background:#5DCAA5"></span>
+                        <span class="ap-panel-title">Cola de espera</span>
+                        <span class="badge rounded-pill ms-auto ap-counter" id="contador-espera">0</span>
+                    </div>
+                    <ul class="list-group list-group-flush ap-queue-list" id="lista-espera">
+                    </ul>
                 </div>
-                <ul class="list-group list-group-flush" id="lista-espera">
-                    <!-- El JS llenará esto automáticamente -->
-                </ul>
             </div>
+
         </div>
     </div>
 </div>

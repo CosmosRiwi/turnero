@@ -1,0 +1,108 @@
+:root {
+    --navy:      #0d1f3c;
+    --gold:      #c4a050;
+    --gold-dark: #b8922a;
+    --cream:     #f0e6c8;
+}
+
+/* Body */
+.lyt-body {
+    background: #f4f1eb;
+    font-family: 'Lato', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar */
+.lyt-navbar {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(196, 160, 80, 0.2);
+}
+
+.lyt-brand {
+    font-family: 'Playfair Display', serif;
+    color: var(--cream) !important;
+    font-size: 18px;
+    letter-spacing: 0.4px;
+}
+
+.lyt-brand span { color: var(--gold); }
+
+.lyt-nav-link {
+    color: rgba(255,255,255,0.45) !important;
+    font-size: 13px;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+}
+
+.lyt-nav-link:hover {
+    color: var(--cream) !important;
+    background: rgba(255,255,255,0.06);
+}
+
+.lyt-nav-cta {
+    color: var(--gold) !important;
+    border: 1px solid rgba(196,160,80,0.35);
+}
+
+.lyt-nav-cta:hover {
+    background: rgba(196,160,80,0.1) !important;
+    color: var(--gold) !important;
+}
+
+.lyt-nav-sep {
+    width: 1px;
+    height: 16px;
+    background: rgba(255,255,255,0.1);
+    margin: 0 4px;
+}
+
+.lyt-nav-user {
+    color: rgba(255,255,255,0.45);
+    font-size: 13px;
+    padding: 0 8px;
+}
+
+.lyt-nav-user i  { color: var(--gold); }
+.lyt-nav-user strong { color: var(--gold); }
+
+.lyt-btn-salir {
+    background: transparent;
+    border: 1px solid rgba(212,83,126,0.45);
+    color: #D4537E;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    transition: background 0.2s;
+}
+
+.lyt-btn-salir:hover {
+    background: rgba(212,83,126,0.1);
+    color: #D4537E;
+}
+
+/* Footer */
+.lyt-footer {
+    background: var(--navy);
+    border-top: 1px solid rgba(196,160,80,0.15);
+}
+
+.lyt-ft-copy {
+    color: rgba(255,255,255,0.28);
+    font-size: 11px;
+}
+
+.lyt-ft-copy span { color: rgba(196,160,80,0.55); }
+
+.lyt-ft-link {
+    color: rgba(255,255,255,0.25);
+    font-size: 11px;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.lyt-ft-link:hover { color: var(--gold); }
+
+.lyt-ft-sep { color: rgba(255,255,255,0.15); font-size: 11px; }
