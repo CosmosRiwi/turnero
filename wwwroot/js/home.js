@@ -2,13 +2,16 @@ async function solicitarTurno() {
     let dni = $("#dni-cliente").val();
     if (!dni) return Swal.fire('Atención', 'Ingrese su número de documento', 'warning');
 
+    Swal.showLoading();
     // 1. Buscamos si el usuario existe
     $.get(`/Asesor/BuscarPorDni?dni=${dni}`, function (res) {
         if (res.status) {
             // Usuario existe, preguntamos prioridad (en un kiosco real esto sería botones)
+            Swal.showLoading();
             mostrarMenuPrioridad(res.data.id, res.data.name);
         } else {
             // Usuario no existe, lanzamos registro rápido
+            Swal.showLoading();
             registrarYAsignar(dni);
         }
     });
@@ -52,7 +55,7 @@ async function mostrarMenuPrioridad(userId, nombre) {
         confirmButtonText: 'Generar Ticket',
         inputValidator: (value) => { if (!value) return 'Debes elegir una opción'; }
     });
-
+    Swal.showLoading();
     if (priorityId) {
         $.post('/Asesor/AsignarTurno', { userId: userId, priorityId: priorityId }, function (res) {
             // Importante: validar con 'res.success' o 'res.status' según tu controlador

@@ -1,14 +1,14 @@
 @model SistemaTurnos.Models.Turn
 @{
-    Layout = "_Layout";
-    ViewData["Title"] = "Sala de Espera";
-    ViewData["FullWidth"] = true;
-    var siguientes = ViewBag.Siguientes as IEnumerable<SistemaTurnos.Models.Turn>;
+Layout = "_Layout";
+ViewData["Title"] = "Sala de Espera";
+ViewData["FullWidth"] = true;
+var siguientes = ViewBag.Siguientes as IEnumerable<SistemaTurnos.Models.Turn>;
 }
 
 @section Styles {
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="~/css/sala-espera.css" asp-append-version="true"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="~/css/sala-espera.css" asp-append-version="true"/>
 }
 
 <div class="sala-wrapper">
@@ -21,36 +21,29 @@
                     <span class="sala-dot-pulse me-2"></span>TURNO ACTUAL
                 </p>
                 <div class="text-center" id="contenedor-principal">
-                    <!-- Se llenará con JS -->
                     <span class="display-1 fw-bold sala-ticket-num" style="font-size: 12rem;" id="txt-sala-ticket">---</span>
                     <h2 class="display-3 text-uppercase text-white sala-ticket-name" id="txt-sala-nombre">ESPERANDO...</h2>
+
+                    <!-- NUEVO: Contenedor para el Módulo -->
+                    <h3 class="display-5 mt-4 fw-bold" id="txt-sala-modulo" style="color: #c4a050; letter-spacing: 5px;"></h3>
                 </div>
             </div>
 
             <!-- DERECHA: SIGUIENTES + VIDEO -->
             <div class="col-md-4 d-flex flex-column sala-right">
-
                 <div class="sala-right-header">
                     <i class="fas fa-list-ol me-2"></i>PRÓXIMOS
                 </div>
+                <div id="lista-sala-espera"></div>
 
-                <div id="lista-sala-espera">
-                    <!-- Se llenará con JS -->
-                </div>
-
-                <!-- VIDEO LOCAL -->
                 <div class="sala-video-section mt-auto">
                     <div class="sala-video-label">
                         <i class="fas fa-play-circle me-1"></i>En reproducción
                     </div>
                     <div class="sala-video-wrap">
-                        <video src="~/videos/promo.mp4"
-                               autoplay loop muted playsinline
-                               class="w-100">
-                        </video>
+                        <video src="~/videos/promo.mp4" autoplay loop muted playsinline class="w-100"></video>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -61,53 +54,63 @@
 </audio>
 
 @section Scripts {
-    <script src="~/js/home.js"></script>
-    <script>
-        let ultimoTicket = "";
+<script src="~/js/home.js"></script>
+<script>
+    let ultimoTicket = "";
 
-        function refrescarSala() {
-            $.get('/Home/GetSalaData', function(res) {
-                if (res.ticket !== ultimoTicket && res.ticket !== "---") {
-                    const sonido = document.getElementById('audio-notificacion');
-                    sonido.play().catch(error => {
-                        console.log("El navegador bloqueó el sonido. Haz un clic en la pantalla.");
-                    });
-
-                    $("#txt-sala-ticket").fadeOut(300, function() {
-                        $(this).text(res.ticket).fadeIn(300);
-                    });
-
-                    $("#txt-sala-nombre").fadeOut(300, function() {
-                        $(this).text(res.cliente).fadeIn(300);
-                    });
-
-                    ultimoTicket = res.ticket;
-                }
-                else if (res.ticket === "---" && ultimoTicket !== "") {
-                    $("#txt-sala-ticket").text("---");
-                    $("#txt-sala-nombre").text("OFICINA DISPONIBLE");
-                    ultimoTicket = "";
-                }
-
-                actualizarListaLateral(res.proximos);
-            });
-        }
-
-        function actualizarListaLateral(proximos) {
-            let listaHtml = "";
-            if (proximos && proximos.length > 0) {
-                proximos.forEach(turno => {
-                    listaHtml += `
-                        <div class="d-flex justify-content-center mb-4 border-bottom border-secondary pt-2 pb-2 animate__animated animate__fadeIn">
-                            <span class="h1 fw-bold text-info">${turno.ticket}</span>
-                        </div>`;
+    function refrescarSala() {
+        $.get('/Home/GetSalaData', function(res) {
+            if (res.ticket !== ultimoTicket && res.ticket !== "---") {
+                const sonido = document.getElementById('audio-notificacion');
+                sonido.play().catch(error => {
+                    console.log("El navegador bloqueó el sonido.");
                 });
-            } else {
-                listaHtml = `<div class="text-center mt-5 text-muted h4">Sin turnos en espera</div>`;
-            }
-            $("#lista-sala-espera").html(listaHtml);
-        }
 
-        setInterval(refrescarSala, 5000);
-    </script>
+                $("#txt-sala-ticket").fadeOut(300, function() {
+                    $(this).text(res.ticket).fadeIn(300);
+                });
+
+                $("#txt-sala-nombre").fadeOut(300, function() {
+                    $(this).text(res.cliente).fadeIn(300);
+                });
+
+                // ACTUALIZACIÓN DEL MÓDULO
+                $("#txt-sala-modulo").fadeOut(300, function() {
+                    if (res.modulo > 0) {
+                        $(this).text("MODULO " + res.modulo).fadeIn(300);
+                    } else {
+                        $(this).text("").hide();
+                    }
+                });
+
+                ultimoTicket = res.ticket;
+            }
+            else if (res.ticket === "---" && ultimoTicket !== "") {
+                $("#txt-sala-ticket").text("---");
+                $("#txt-sala-nombre").text("OFICINA DISPONIBLE");
+                $("#txt-sala-modulo").text(""); // Limpiar módulo
+                ultimoTicket = "";
+            }
+
+            actualizarListaLateral(res.proximos);
+        });
+    }
+
+    function actualizarListaLateral(proximos) {
+        let listaHtml = "";
+        if (proximos && proximos.length > 0) {
+            proximos.forEach(turno => {
+                listaHtml += `
+                        <div class="d-flex justify-content-center border-bottom p-2 border-secondary animate__animated animate__fadeIn">
+                            <span class="h1 fw-bold text-info m-0">${turno.ticket}</span>
+                        </div>`;
+            });
+        } else {
+            listaHtml = `<div class="text-center mt-5 text-muted h4">Sin turnos en espera</div>`;
+        }
+        $("#lista-sala-espera").html(listaHtml);
+    }
+
+    setInterval(refrescarSala, 5000);
+</script>
 }

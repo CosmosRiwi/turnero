@@ -97,6 +97,7 @@ public class TurnService : ITurnService
     {
         var turn = await _context.Turns
             .Include(t => t.User)
+            .Include(t => t.Staff)
             .Where(t => t.StatusId == (int)TurnoStatus.EnAtencion)
             .OrderByDescending(t => t.UpdatedAt)
             .FirstOrDefaultAsync();

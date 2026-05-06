@@ -4,6 +4,8 @@
 @{
     ViewData["Title"] = "Panel del Asesor";
     ViewData["FullWidth"] = true;
+    // Extraemos el ID del staff desde los Claims para mostrarlo de entrada
+    var staffId = User.FindFirst("StaffId")?.Value ?? "1";
 }
 
 @section Styles {
@@ -13,17 +15,19 @@
 
 <div class="ap-wrapper">
 
- 
+    <!-- TOPBAR: Aquí es donde se muestra el estado y el módulo -->
     <div class="d-flex align-items-center justify-content-between px-4 py-3 ap-topbar">
         <h1 class="ap-title mb-0">Panel del Asesor</h1>
-        <span class="badge rounded-pill ap-badge-estado" id="badge-estado">&#9679; Sin turno activo</span>
+        <!-- El ID 'badge-estado' es el que actualizaremos con JS -->
+        <span class="badge rounded-pill ap-badge-estado" id="badge-estado">
+            ● Módulo @staffId - Sin turno activo
+        </span>
     </div>
 
-  
     <div class="container-fluid px-4 py-3">
         <div class="row g-3">
 
-           
+            <!-- BLOQUE 1: Gestión de Clientes -->
             <div class="col-lg-4">
                 <div class="card h-100 ap-card">
                     <div class="card-header d-flex align-items-center gap-2 ap-card-header">
@@ -56,7 +60,7 @@
                 </div>
             </div>
 
-          
+            <!-- BLOQUE 2: Atención Actual (El corazón de tu trabajo) -->
             <div class="col-lg-4">
                 <div class="card h-100 ap-card">
                     <div class="card-header d-flex align-items-center gap-2 ap-card-header">
@@ -65,14 +69,14 @@
                     </div>
                     <div class="card-body d-flex flex-column">
 
+                        <!-- Estado Inicial: Botón para llamar -->
                         <div id="atencion-vacia" class="d-flex flex-column align-items-center justify-content-center flex-grow-1 gap-3">
-                            <div class="ap-empty-icon">&#9711;</div>
-                            <p class="text-center mb-0 ap-empty-text">No hay ningún cliente en atención</p>
                             <button class="btn w-100 ap-btn-call" onclick="CallNext()">
                                 <i class="fas fa-bullhorn me-2"></i>Llamar siguiente
                             </button>
                         </div>
 
+                        <!-- Estado Activo: Se muestra cuando response.success es true -->
                         <div id="atencion-activa" style="display:none">
                             <div class="text-center py-2">
                                 <div class="ap-ticket-num" id="txt-ticket">---</div>
@@ -90,7 +94,9 @@
                                     <span class="ap-info-val" id="txt-hora">—</span>
                                 </div>
                             </div>
+                            <!-- Campo oculto vital para saber qué turno estamos cerrando -->
                             <input type="hidden" id="hdn-turno-id"/>
+                            
                             <div class="d-grid gap-2">
                                 <button class="btn ap-btn-finish" onclick="confirmFinish()">
                                     <i class="fas fa-check-circle me-2"></i>Finalizar atención
@@ -105,6 +111,7 @@
                 </div>
             </div>
             
+            <!-- BLOQUE 3: Cola de Espera (Isabella debería actualizar esto) -->
             <div class="col-lg-4">
                 <div class="card h-100 ap-card">
                     <div class="card-header d-flex align-items-center gap-2 ap-card-header">
@@ -113,6 +120,7 @@
                         <span class="badge rounded-pill ms-auto ap-counter" id="contador-espera">0</span>
                     </div>
                     <ul class="list-group list-group-flush ap-queue-list" id="lista-espera">
+                        <!-- Aquí se inyectan los turnos pendientes por JS -->
                     </ul>
                 </div>
             </div>
@@ -123,4 +131,11 @@
 
 @section Scripts {
     <script src="~/js/asesor.js"></script>
+    <script>
+        // Al cargar, confirmamos visualmente el módulo
+        $(document).ready(function() {
+            const modId = "@staffId";
+            $("#badge-estado").text(`● Módulo ${modId} - Esperando acción`);
+        });
+    </script>
 }

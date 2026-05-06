@@ -37,16 +37,6 @@ public class HomeController : Controller
         return View(currentResponse.Data);
     }
     
-    // [HttpGet]
-    // public async Task<IActionResult> GetSalaData()
-    // {
-    //     var response = await _turnService.GetCurrentCallingAsync();
-    //     return Json(new { 
-    //         success = response.Status, 
-    //         ticket = response.Data?.Ticket ?? "---" 
-    //     });
-    // }
-    
     [HttpGet]
     public async Task<IActionResult> GetSalaData()
     {
@@ -58,6 +48,7 @@ public class HomeController : Controller
             // Datos del turno actual
             ticket = actual.Data?.Ticket ?? "---",
             cliente = actual.Data != null ? $"{actual.Data.User.Name} {actual.Data.User.LastName}" : "OFICINA DISPONIBLE",
+            modulo = actual.Data?.StaffId ?? 0, 
             // Lista de los siguientes 
             proximos = siguientes.Data.Select(t => new { t.Ticket})
         });

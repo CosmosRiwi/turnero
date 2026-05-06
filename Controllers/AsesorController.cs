@@ -67,7 +67,11 @@ public class AsesorController : Controller
                 id = response.Data.Id,
                 cliente = response.Data.User != null
                     ? $"{response.Data.User.Name} {response.Data.User.LastName}"
-                    : "Usuario no registrado"
+                    : "Usuario no registrado",
+                documento = response.Data.User?.Dni ?? "N/A", // Revisa si en tu BD es 'Dni' o 'Document'
+                prioridad = response.Data.Priority?.Name ?? "Normal", 
+                hora = DateTime.Now.ToString("HH:mm:ss"),
+                modulo = "Módulo " + staffId
             }
         });
     }

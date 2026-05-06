@@ -15,7 +15,11 @@ function CallNext() {
             $("#atencion-activa").fadeIn();
 
             $("#txt-ticket").text(response.data.ticket);
-            $("#txt-cliente").text(response.data.user.name + " " + response.data.user.lastName);
+            $("#txt-cliente").text(response.data.cliente);
+            $("#txt-doc").text(response.data.documento);
+            $("#txt-hora").text(response.data.hora);
+            $("#txt-prioridad").text(response.data.prioridad);
+            $("#badge-estado").text("● Atendiendo en Módulo " + response.data.modulo);
             $("#hdn-turno-id").val(response.data.id);
         } else {
             // Mensaje si no hay más turnos
@@ -93,7 +97,7 @@ async function cancelAttention() {
         showCancelButton: true,
         confirmButtonText: 'Sí, cancelar'
     });
-
+    
     if (motivo) {
         let id = $("#hdn-turno-id").val();
         $.post('/Asesor/CancelTurn', {turnId: id, reason: motivo}, function (response) {
@@ -119,7 +123,7 @@ function cleanAttentionPanel() {
 function buscarORegistrar() {
     let dni = $("#dni-busqueda").val();
     if (!dni) return Swal.fire('Error', 'Ingrese un DNI', 'error');
-
+    Swal.showLoading();
     $.get(`/Asesor/BuscarPorDni?dni=${dni}`, function (response) {
         if (response.status) {
             // USUARIO EXISTE: Preguntar prioridad
@@ -147,13 +151,24 @@ async function seleccionarPrioridad(userId, nombre) {
             if (!value) return 'Debes seleccionar una prioridad'
         }
     });
-
     if (priorityId) {
         $.post('/Asesor/AsignarTurno', {userId: userId, priorityId: priorityId}, function (res) {
-            if (res.status) {
-                Swal.fire('Ticket Generado', `Número: ${res.data.ticket}`, 'success');
-                actualizarListaEspera(); // Refrescamos la lista lateral
-                // AQUÍ LLAMARÍAS A LA IMPRESORA DE UBUNTU
+            if (res.success || res.status) {
+                Swal.fire({
+                    title: '¡TICKET GENERADO!',
+                    html: `<h1 class="display-1 fw-bold text-primary">${res.data.ticket}</h1><p>Espere su llamado en la sala.</p>`,
+                    icon: 'success',
+                    timer: 5000,
+                    showConfirmButton: false
+                });
+            } else {
+                // AQUÍ MOSTRARÁ EL MENSAJE: "El usuario ya tiene un turno en proceso"
+                Swal.fire({
+                    title: 'Atención',
+                    text: res.message, // Este es el mensaje que viene del ServiceResponse.Error
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6'
+                });
             }
         });
     }
@@ -176,7 +191,7 @@ async function registrarNuevoUsuario(dni) {
             }
         }
     });
-
+    Swal.showLoading();
     if (formValues) {
         $.post('/Asesor/RegistrarUsuario', formValues, function (response) {
             if (response.status) {

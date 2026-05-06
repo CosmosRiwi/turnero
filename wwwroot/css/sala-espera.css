@@ -4,7 +4,9 @@
     min-height: calc(100vh - 58px);
     font-family: 'Lato', sans-serif;
 }
-
+main{
+    height: 88vh;
+}
 /* ── IZQUIERDA ───────────────────────────── */
 .sala-left {
     border-right: 1px solid rgba(255, 255, 255, 0.07);
